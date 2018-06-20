@@ -56,14 +56,12 @@ let getSalario = (id) => {
     });
 }
 
-// getEmpleado(10).then(empleado => {
-//     console.log("Empleado de DB: ", empleado);
+getEmpleado(10).then(empleado => {
+    
+})
+
+// getSalario(5).then(salario => {
+//     console.log("Salario de DB: ", salario);
 // }, (err) => {
 //     console.log(err);
-// })
-
-getSalario(5).then(salario => {
-    console.log("Salario de DB: ", salario);
-}, (err) => {
-    console.log(err);
-});
+// });
