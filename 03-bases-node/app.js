@@ -1,10 +1,8 @@
 
 const { crearArchivo } = require('./multiplicar/multiplicar')
 
-let base = 4;
+let base = 'ABC';
 
-
-
-console.log(multiplicar);
 crearArchivo(base)
-    .then(archivo => console.log(`Archivo Creado con base: ${archivo}`));
+    .then(archivo => console.log(`Archivo Creado con base: ${archivo}`))
+    .catch(e => console.log(e));

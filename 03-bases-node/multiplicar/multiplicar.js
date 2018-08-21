@@ -2,6 +2,12 @@ const fs = require('fs');
 
 let crearArchivo = (base) => {
     return new Promise((resolve, reject) => {
+
+        if(!Number(base) ){
+            reject('No es un número');
+            return;
+        }
+
         let data = '';
 
         for (let i = 1; i <= 10; i++) {
