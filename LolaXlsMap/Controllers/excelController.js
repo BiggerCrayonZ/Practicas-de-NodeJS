@@ -4,10 +4,14 @@ const Json2csvParser = require('json2csv').Parser;
 const fieldsCVS = ['Intent', 'Entity', 'Question'];
 const json2csvParser = new Json2csvParser({ fieldsCVS });
 var fs = require('fs');
+const axios = require('axios');
 
 //Paths
 const csvFilePath1 = './uploads/uploadIntent.csv';
 const csvFilePath2 = './uploads/uploadEntity.csv';
+
+const POST_MESSAGE = process.env.CONVERSATION_URL;
+
 
 //Functions
 createJson = async (path) => {
@@ -36,7 +40,7 @@ createMap = async (Intents, Entities) => {
                     }
                     item.Entity = itemEntity.Entity;
                     //axios
-                    
+
                     item.Question = itemIntent.Value + " " + itemEntity.Value;
                     await res.push(item);
                 })
@@ -44,7 +48,60 @@ createMap = async (Intents, Entities) => {
         } catch (err) {
             console.log("createMapErr: ", err);
         }
-        await resolve(res);
+        resolve(res);
+    })
+}
+
+executeRequest = (question) => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            headers: {
+                "Content-Type": "application/json",
+                "X-IBM-Client-Id": "37f5a536-9be2-4405-b663-3b1fb23f26d3"
+            },
+            json: true
+        }
+        let context = {
+            "conversation_id": "90f4e323-6f3d-436d-8d3a-a648107c985c",
+            "system": {
+                "branch_exited_reason": "completed",
+                "dialog_request_counter": 1,
+                "branch_exited": true,
+                "dialog_turn_counter": 1,
+                "dialog_stack": [
+                    {
+                        "dialog_node": "root"
+                    }
+                ],
+                "_node_output_map": {
+                    "node_4_1525296837333": [
+                        0
+                    ]
+                }
+            },
+            "question": "inicio",
+            "response": {
+                "answer": ""
+            }
+        }
+        try {
+            // console.log("request: ", POST_MESSAGE + "api/message");
+            let element = question;
+            console.log("question: ", question);
+            axios.post("https://asklola-be.mybluemix.net/api/message", { message: { text: question.Question }, "context": context, "userName": "test", "email": "test@email.com" }, config)
+                .then(async (response) => {
+                    console.log("response: ", response.data.answer.text);
+                    element.Answer = response.data.answer.text;
+                    resolve(element);
+                }).catch((error) => {
+                    console.log("err in: " + question.Question + " in err: " + error);
+                    element.Answer = "N/A";
+                    resolve(element);
+                });
+
+        } catch (err) {
+            console.log("createMapErr: ", err);
+        }
     })
 }
 
@@ -88,12 +145,14 @@ safeFile = async (csv) => {
 Router.get('/', async (req, res) => {
     createJson(csvFilePath1).then((jsonObj1) => {
         // res.send(jsonObj1);
-        createJson(csvFilePath2).then(async (jsonObj2) => {
-            await createMap(jsonObj1, jsonObj2).then((jsonRes) => {
-                createCSV(jsonRes).then((csvRes) => {
-                    safeFile(csvRes).then((message) => {
-                        res.send(message);
-                    })
+        createJson(csvFilePath2).then((jsonObj2) => {
+            createMap(jsonObj1, jsonObj2).then(async (jsonRes) => {
+                let promises = [];
+                jsonRes.map((element) => {
+                    promises.push(executeRequest(element));
+                });
+                Promise.all(promises).then(values => {
+                    res.status(200).send(values);
                 })
             })
         }).catch((err2) => {
