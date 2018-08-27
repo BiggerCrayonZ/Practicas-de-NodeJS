@@ -57,12 +57,12 @@ executeRequest = (question) => {
         let config = {
             headers: {
                 "Content-Type": "application/json",
-                "X-IBM-Client-Id": "37f5a536-9be2-4405-b663-3b1fb23f26d3"
+                "X-IBM-Client-Id": ""
             },
             json: true
         }
         let context = {
-            "conversation_id": "90f4e323-6f3d-436d-8d3a-a648107c985c",
+            "conversation_id": "",
             "system": {
                 "branch_exited_reason": "completed",
                 "dialog_request_counter": 1,
