@@ -35,6 +35,8 @@ createMap = async (Intents, Entities) => {
                         Intent: itemIntent.Intent
                     }
                     item.Entity = itemEntity.Entity;
+                    //axios
+                    
                     item.Question = itemIntent.Value + " " + itemEntity.Value;
                     await res.push(item);
                 })
