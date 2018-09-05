@@ -34,6 +34,11 @@ createMap = async (Intents, Entities) => {
         let res = [];
         try {
             await Intents.map(async (itemIntent) => {
+                let empty = {
+                    Intent: itemIntent.Intent,
+                    Question: itemIntent.Value
+                }
+                res.push(empty);
                 await Entities.map(async (itemEntity) => {
                     let item = {
                         Intent: itemIntent.Intent
@@ -57,7 +62,7 @@ executeRequest = (question) => {
         let config = {
             headers: {
                 "Content-Type": "application/json",
-                "X-IBM-Client-Id": ""
+                "X-IBM-Client-Id": "37f5a536-9be2-4405-b663-3b1fb23f26d3"
             },
             json: true
         }
@@ -87,7 +92,7 @@ executeRequest = (question) => {
         try {
             // console.log("request: ", POST_MESSAGE + "api/message");
             let element = question;
-            console.log("question: ", question);
+            // console.log("question: ", question.Question);
             axios.post("https://asklola-be.mybluemix.net/api/message", { message: { text: question.Question }, "context": context, "userName": "test", "email": "test@email.com" }, config)
                 .then(async (response) => {
                     console.log("response: ", response.data.answer.text);
@@ -100,7 +105,7 @@ executeRequest = (question) => {
                 });
 
         } catch (err) {
-            console.log("createMapErr: ", err);
+            console.log("executeRequestErr: ", err);
         }
     })
 }
@@ -125,7 +130,7 @@ createCSV = async (json) => {
 safeFile = async (csv) => {
     return new Promise(async (resolve, reject) => {
         try {
-            fs.writeFile("res.csv", csv, (err) => {
+            fs.writeFile("result4.csv", csv, (err) => {
                 if (err) {
                     console.log("safeFileErr: ", err);
                     reject(err);
@@ -143,16 +148,27 @@ safeFile = async (csv) => {
 
 //Routes
 Router.get('/', async (req, res) => {
+    console.log("----------- Process Started -----------");
     createJson(csvFilePath1).then((jsonObj1) => {
+        console.log("----------- Process Creating Json's -----------");
         // res.send(jsonObj1);
         createJson(csvFilePath2).then((jsonObj2) => {
             createMap(jsonObj1, jsonObj2).then(async (jsonRes) => {
+                console.log("----------- Process Mapping Json's -----------");
                 let promises = [];
                 jsonRes.map((element) => {
                     promises.push(executeRequest(element));
                 });
+                console.log("----------- Process Execute CSV -----------");
                 Promise.all(promises).then(values => {
-                    res.status(200).send(values);
+                    console.log("----------- Process Creating CSV -----------");
+                    createCSV(values).then((csv) => {
+                        console.log("----------- Process Download CSV -----------");
+                        safeFile(csv).then((message) => {
+                            console.log("----------- Process Done -----------");
+                            res.status(200).send(csv);
+                        })
+                    })
                 })
             })
         }).catch((err2) => {

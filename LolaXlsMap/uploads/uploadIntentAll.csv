@@ -1,0 +1,21 @@
+Value,Intent
+por que esta apagado,aire_acondicionado
+que sabes hacer,capacidades
+Quiero dejar,dejar_feedback
+bye,despedidas
+Te agradezco,gracias
+que necesito para poder subirme al camion,informacion
+quiero consultar el reglamento,informacion
+Quien te creo,Informacion_personal
+cuales rutas existen,listar_rutas
+Necesito ir,Lugares_rutas
+What is love,Miscelaneo
+como te llamas?,nombre_watson
+Cual es el link,Obtener_instrucciones
+Que tengo que hacer para reservar,Reservaciones
+De que anden,Rutas_anden
+horarios,Rutas_horario
+Donde se para,Rutas_paradas
+Por donde pasa,Rutas_recorrido
+Hola,saludos
+Que turnos hay,turnos
