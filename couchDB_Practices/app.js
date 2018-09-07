@@ -1,15 +1,20 @@
+/* Setting Const and requires */
 require('dotenv').load();
 const express = require('express');
-let app = express();
+const bodyParser = require('body-parser');
+const employee_routes = require('./src/routes/employee_routes.js');
+const cfenv = require('cfenv');
+const appEnv = cfenv.getAppEnv();
 
+/* App Port and Express */
+let app = express();
 let port = process.env.PORT || 5000;
 
+/* App Usage  */
 app.use(bodyParser.urlencoded({
     extended: false
 }));
-
 app.use(bodyParser.json({}));
-
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -21,3 +26,10 @@ app.use(function (req, res, next) {
     next();
 });
 
+/* App Listener */
+app.listen(port, function (err) {
+    console.log('running on server on port:' + port);
+});
+
+/* Routes */
+app.use('/', employee_routes);

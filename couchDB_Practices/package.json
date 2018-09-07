@@ -9,6 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^6.0.0"
+    "body-parser": "^1.18.2",
+    "cfenv": "^1.1.0",
+    "cloudant": "^1.10.0-NOTICE",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3"
+  },
+  "engines": {
+    "node": "8.9.1"
   }
 }
