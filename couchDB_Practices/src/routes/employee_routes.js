@@ -12,14 +12,15 @@ employee_routes.route('/getEmployeesByJob').post((req, res) => {
 
 })
 
-employee_routes.route('/createEmployees').post(async(req, res) => {
-    console.log("createEmployees");
+employee_routes.route('/createEmployees').post(async (req, res) => {
+    // console.log("createEmployees");
     var i;
     let userBulk = [];
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 5; i++) {
         await axios.get(url).then((item) => {
             // console.log(item.data.results[0]);
             let name = item.data.results[0].name.first + " " + item.data.results[0].name.last
+            let email = item.data.results[0].email
             let address = {
                 street: item.data.results[0].location.street,
                 city: item.data.results[0].location.city,
@@ -27,15 +28,16 @@ employee_routes.route('/createEmployees').post(async(req, res) => {
             }
             let skills = ["SQL", "JSON", "React"];
             let user = {
-                department: "02",
+                department: i,
                 name: name,
+                email: email,
                 job: "PM",
                 address: address,
                 skills: skills
             }
             userBulk.push(user);
         })
-        
+
     }
     // console.log(userBulk);
     res.status(200).send(userBulk);
