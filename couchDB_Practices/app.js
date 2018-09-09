@@ -2,7 +2,7 @@
 require('dotenv').load();
 const express = require('express');
 const bodyParser = require('body-parser');
-const employee_routes = require('./src/routes/employee_routes.js');
+const routes = require('./src/routes/routes');
 const cfenv = require('cfenv');
 const appEnv = cfenv.getAppEnv();
 
@@ -32,4 +32,4 @@ app.listen(port, function (err) {
 });
 
 /* Routes */
-app.use('/', employee_routes);
+app.use('/', routes);

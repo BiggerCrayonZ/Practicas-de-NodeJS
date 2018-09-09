@@ -11,6 +11,7 @@ module.exports.queries = {
                 }
             },
             "fields": [
+                "email",
                 "name",
                 "department",
                 "skills"
