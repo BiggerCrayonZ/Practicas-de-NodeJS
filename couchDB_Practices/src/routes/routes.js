@@ -31,4 +31,13 @@ routes.route('/employee/createEmployeesGroup').post((req, res) => {
     })
 })
 
+/* Delete */
+routes.route('/employee/deleteEmployee').post((req, res) => {
+    employee.deleteEmployee(req.body.id).then(response => {
+        res.status(200).send({ status: "Done" });
+    }).catch(err => {
+        res.status(400).send({ status: "Fail"});
+    })
+})
+
 module.exports = routes;

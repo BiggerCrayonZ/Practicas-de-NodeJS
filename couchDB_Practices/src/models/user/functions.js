@@ -19,6 +19,19 @@ class EmployeeFunctions {
         })
     }
 
+    deleteEmployee(id) {
+        console.log("---------------- deleteEmployee ------------------");
+        return new Promise((reject, resolve) => {
+            try {
+                response = db.delete(id);
+                console.log("response delete: ", response);
+                resolve(response);
+            } catch (err) {
+                reject(err);
+            }
+        })
+    }
+
     createSingleEmployee() {
         console.log("---------------- createSingleEmployee ------------------");
         return new Promise(async (resolve, reject) => {
@@ -44,6 +57,7 @@ class EmployeeFunctions {
                     this.saveEmployee(user).then(response => {
                         resolve(user);
                     }).catch(err => {
+                        console.log("err: ", err);
                         reject(err);
                     })
                 })
@@ -65,6 +79,7 @@ class EmployeeFunctions {
                 let userGroup = [];
                 try {
                     var i;
+                    console.log("------ axios ------");
                     for (i = 1; i <= total; i++) {
                         await axios.get(url).then((item) => {
                             // console.log(item.data.results[0]);
@@ -87,6 +102,8 @@ class EmployeeFunctions {
                             userGroup.push(user);
                         })
                     }
+                    console.log("------ save ------");
+                    await db.bulk(userGroup);
                     resolve(userGroup);
                 } catch (err) {
                     reject(err);
