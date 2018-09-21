@@ -7,13 +7,29 @@ class Functions {
     getHero(hero) {
         return new Promise((resolve, reject) => {
             let response;
+            let att;
             try {
                 response = db.read(hero);
             } catch (err) {
                 reject(err);
             }
+            
             resolve(response);
         })
+    }
+
+    getAtt(docName, attName){
+        console.log("getAtt");
+        return new Promise((resolve, reject) => {
+            let att;
+            try{
+                att = db.getAtt(docName, attName);
+            }catch(err){
+                reject(err);
+            }
+            
+            resolve(att);
+        });
     }
 
     findHero(term) {

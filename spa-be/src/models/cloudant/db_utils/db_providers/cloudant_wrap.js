@@ -71,7 +71,7 @@ class Cloudant_Wrap {
         if (new_object._rev != undefined) {
           delete new_object._rev;
         }
-        if (this.base_model){
+        if (this.base_model) {
           var model = JSON.parse(JSON.stringify(this.base_model));
           Object.keys(new_object).forEach((key) => {
             if (model[key] !== undefined) {
@@ -179,29 +179,29 @@ class Cloudant_Wrap {
    * To be used on a clean database
    * @param indexes Array of cloudant indexes
    */
-   insertIndexes(indexes) {
-      return new Promise((resolve, reject) => {
-        var promises = [];
-        if (!indexes) {
-          resolve(204);
-        } else {
-          Object.keys(indexes).forEach((key) => {
-            promises.push(new Promise((resolve, reject) => {
-              this.database.index(indexes[key], (err, response) => {
-                if (err) {
-                  reject([]);
-                } else {
-                  resolve(response);
-                }
-              });
-            }));
-          });
-          Promise.all(promises).then(values => {
-            resolve(values);
-          });
-        }
-      });
-    }
+  insertIndexes(indexes) {
+    return new Promise((resolve, reject) => {
+      var promises = [];
+      if (!indexes) {
+        resolve(204);
+      } else {
+        Object.keys(indexes).forEach((key) => {
+          promises.push(new Promise((resolve, reject) => {
+            this.database.index(indexes[key], (err, response) => {
+              if (err) {
+                reject([]);
+              } else {
+                resolve(response);
+              }
+            });
+          }));
+        });
+        Promise.all(promises).then(values => {
+          resolve(values);
+        });
+      }
+    });
+  }
 
   /**
    * Insert an array of elements
@@ -209,18 +209,18 @@ class Cloudant_Wrap {
    * @param {function} process_documents Function to be ejecuted on docs
    */
   bulk(docs, process_documents) {
-    return new Promise((fulfill, reject) =>{
+    return new Promise((fulfill, reject) => {
       if (!docs || !docs[0]) {
         reject(400)
       } else {
 
-        if(typeof process_documents === 'function'){
+        if (typeof process_documents === 'function') {
           docs.forEach(process_documents);
         }
 
         this.database.bulk({
           docs: docs
-        }, function(err, data) {
+        }, function (err, data) {
           if (err) {
             reject(err);
           } else {
@@ -252,7 +252,7 @@ class Cloudant_Wrap {
    * Remove a database by name
    * @param {string} db_name Name of database to delete
    */
-  
+
   deleteDB(db_name) {
     return new Promise((resolve, reject) => {
       this.cloudant.db.destroy(db_name, err => {
@@ -264,6 +264,21 @@ class Cloudant_Wrap {
       });
     });
   }
+  /** 
+   * Get Attachments by docname, attname, params and callback
+   * @param {string} docname Name of the document
+   * @param {string} attname Attachment name
+  */
+  getAtt(docname, attname) {
+    return new Promise((resolve, reject) => {
+      this.database.attachment.get(docname, attname, (err, body) => {
+        if (!err) {
+          resolve(body);
+        }
+      })
+    })
+  }
+
 
 }
 
