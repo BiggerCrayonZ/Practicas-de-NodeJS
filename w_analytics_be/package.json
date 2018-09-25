@@ -1,0 +1,22 @@
+{
+  "name": "w_analytics_be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cfenv": "^1.1.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "opn": "^5.4.0",
+    "path": "^0.12.7",
+    "querystring": "^0.2.0",
+    "url": "^0.11.0",
+    "util": "^0.11.0"
+  }
+}
