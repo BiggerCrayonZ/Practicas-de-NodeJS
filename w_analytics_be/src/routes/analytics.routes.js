@@ -3,6 +3,7 @@ const constants = require('../../constants');
 const fs = require('fs');
 var opn = require('opn');
 const urlutil = require('url');
+const csv = require("fast-csv");
 
 const routes = require('express').Router();
 const { authFunctions } = require('../model/auth/functions');
@@ -10,7 +11,7 @@ const { datasetFunctions } = require('../model/dataset/functions');
 
 /* Functions */
 let auth = new authFunctions;
-let dataset = new datasetFunctions;
+
 
 /* Vars */
 let WATSON_URL = constants.constants.WATSON_AMALYTICS_API_URL;
@@ -22,6 +23,18 @@ let access_tokens = {
     userID: 'undefined',
     token: 'undefined'
 }
+
+let access_token;
+
+
+if (evaluateToken()) {
+    access_token = JSON.parse(fs.readFileSync('./tokens/token.json', 'utf8'));
+} else {
+    access_token = undefined;
+}
+
+let dataset = new datasetFunctions(access_token.access_token);
+
 let appKey = JSON.parse(fs.readFileSync('./appkey.json', 'utf8'));
 let redirect_url = 'http://' + APPLICATION_URL + ':' + PORT + '/oauth2/code';
 
@@ -49,19 +62,31 @@ routes.route('/oauth2/code').get((req, res) => {
 });
 
 routes.route('/dataset/empty').post((req, res) => {
-    dataset.pushDatatoDataSet('Holiii', {dataset: 'data'}).then(() => {
-        res.sendStatus(200);
+    var body = 'c1, c2\n';
+    body += 'r1, r1\n';
+    body += 'r3, r3\n';
+    dataset.pushDatatoDataSet('30 dataset', body).then((responseObject) => {
+        res.status(200).send(responseObject);
     }).catch((err) => {
         res.status(400).send(err);
     })
+
 });
 
 routes.route('/dataset/upload').post((req, res) => {
-
+    let id = req.body.id;
+    var body = 'c1, c2\n';
+    body += 'r1, r1\n';
+    body += 'r2, r2\n';
+    dataset.pushData(id, body).then((result) => {
+        res.status(200).send(result);
+    }).catch((err) => {
+        res.status(400).send(err);
+    });
 });
 
-routes.route('/dataset/status/:id').get((req, res) => {
-
+routes.route('/dataset/output/:id').get((req, res) => {
+    
 });
 
 routes.route('/dataset/delete/:id').get((req, res) => {
@@ -79,6 +104,16 @@ function setAccessToken(token) {
     access_tokens.userID = 'demo-user';
     access_tokens.token = token;
 };
+
+function evaluateToken() {
+    if (fs.existsSync('../../tokens/token.json')) {
+        console.log("--- false")
+        return false;
+    } else {
+        console.log("--- true")
+        return true;
+    }
+}
 
 /* Export */
 module.exports = routes;
