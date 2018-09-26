@@ -30,7 +30,18 @@ class datasetFunctions {
                 },
                 data: body
             };
-            //axios
+            console.log("request: ", request);
+            console.log("body: ", body);
+            console.log("id_dataset_options: ", id_dataset_options);
+            axios.post(request, body, id_dataset_options).then((data) => {
+                let responseObject = data.data;
+            })
         });
     }
+
+    dataSetRequest(dataset_id, dataset, res) {
+        let request = 'http://' + WATSON_URL + WATSON_PATH + '/data/v1/datasets/' + dataset_id + '/content';
+        //let
+    }
 }
+exports.datasetFunctions = datasetFunctions;

@@ -6,9 +6,11 @@ const urlutil = require('url');
 
 const routes = require('express').Router();
 const { authFunctions } = require('../model/auth/functions');
+const { datasetFunctions } = require('../model/dataset/functions');
 
 /* Functions */
 let auth = new authFunctions;
+let dataset = new datasetFunctions;
 
 /* Vars */
 let WATSON_URL = constants.constants.WATSON_AMALYTICS_API_URL;
@@ -47,7 +49,11 @@ routes.route('/oauth2/code').get((req, res) => {
 });
 
 routes.route('/dataset/empty').post((req, res) => {
-    
+    dataset.pushDatatoDataSet('Holiii', {dataset: 'data'}).then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        res.status(400).send(err);
+    })
 });
 
 routes.route('/dataset/upload').post((req, res) => {
